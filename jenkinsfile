@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') { // Étape pour récupérer le code source
             steps {
                 git branch: 'main',
-                    url: 'git@github.com:minabl/TP3_ops.git', // URL du dépôt GitLab
+                    url: 'git@github.com:minabl/TP3-DevOps.git', // URL du dépôt GitLab
                     credentialsId: 'github_ssh' // Identifiants SSH pour GitLab
             }
         }
