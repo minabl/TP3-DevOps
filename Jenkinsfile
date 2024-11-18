@@ -1,35 +1,32 @@
 pipeline {
     agent any
-    triggers {
-        pollSCM('H/5 * * * *') // Vérifie les changements toutes les 5 minutes
-    }
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub') // Identifiants Docker Hub
-        IMAGE_NAME_SERVER = 'minabf/mern-app-server' // Nom de l'image Docker pour le serveur
-        IMAGE_NAME_CLIENT = 'minabf/mern-app-client' // Nom de l'image Docker pour le client
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+        IMAGE_NAME_SERVER = 'minabf/mern-app-server'
+        IMAGE_NAME_CLIENT = 'minabf/mern-app-client'
     }
     stages {
-        stage('Checkout') { // Étape pour récupérer le code source
+        stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'git@github.com:minabl/TP3-DevOps.git', // URL du dépôt GitLab
-                    credentialsId: 'github_ssh' // Identifiants SSH pour GitLab
+                    url: 'git@github.com:minabl/TP3-DevOps.git',
+                    credentialsId: 'github_ssh'
             }
         }
-        stage('Build Server Image') { // Construction de l'image Docker pour le serveur
+        stage('Build Server Image') {
             steps {
                 dir('server') {
                     script {
-                        dockerImageServer = docker.build("${IMAGE_NAME_SERVER}")
+                        env.DOCKER_IMAGE_SERVER = docker.build("${IMAGE_NAME_SERVER}")
                     }
                 }
             }
         }
-        stage('Build Client Image') { // Construction de l'image Docker pour le client
+        stage('Build Client Image') {
             steps {
                 dir('client') {
                     script {
-                        dockerImageClient = docker.build("${IMAGE_NAME_CLIENT}")
+                        env.DOCKER_IMAGE_CLIENT = docker.build("${IMAGE_NAME_CLIENT}")
                     }
                 }
             }
@@ -56,12 +53,12 @@ pipeline {
                 }
             }
         }
-        stage('Push Images to Docker Hub') { // Pousser les images sur Docker Hub
+        stage('Push Images to Docker Hub') {
             steps {
                 script {
                     docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
-                        dockerImageServer.push()
-                        dockerImageClient.push()
+                        env.DOCKER_IMAGE_SERVER.push()
+                        env.DOCKER_IMAGE_CLIENT.push()
                     }
                 }
             }
@@ -70,8 +67,8 @@ pipeline {
     post {
         always {
             script {
-                dockerImageServer?.remove()
-                dockerImageClient?.remove()
+                env.DOCKER_IMAGE_SERVER?.remove()
+                env.DOCKER_IMAGE_CLIENT?.remove()
             }
         }
     }
