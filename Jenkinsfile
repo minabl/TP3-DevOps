@@ -5,8 +5,8 @@ pipeline {
     }
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub') // Identifiants Docker Hub
-        IMAGE_NAME_SERVER = 'minabf/mern-server' // Nom de l'image Docker pour le serveur
-        IMAGE_NAME_CLIENT = 'minabf/mern-client' // Nom de l'image Docker pour le client
+        IMAGE_NAME_SERVER = 'minabf/mern-app-server' // Nom de l'image Docker pour le serveur
+        IMAGE_NAME_CLIENT = 'minabf/mern-app-client' // Nom de l'image Docker pour le client
     }
     stages {
         stage('Checkout') { // Étape pour récupérer le code source
@@ -34,25 +34,23 @@ pipeline {
                 }
             }
         }
-        stage('Scan Server Image') { // Analyse de l'image serveur avec Trivy
+        stage('Scan Server Image') {
             steps {
                 script {
                     sh """
-                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
-                    aquasec/trivy:latest image --exit-code 0 \\
-                    --severity LOW,MEDIUM,HIGH,CRITICAL \\
+                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                    aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
                     ${IMAGE_NAME_SERVER}
                     """
                 }
             }
         }
-        stage('Scan Client Image') { // Analyse de l'image client avec Trivy
+        stage('Scan Client Image') {
             steps {
                 script {
                     sh """
-                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \\
-                    aquasec/trivy:latest image --exit-code 0 \\
-                    --severity LOW,MEDIUM,HIGH,CRITICAL \\
+                    docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                    aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
                     ${IMAGE_NAME_CLIENT}
                     """
                 }
@@ -70,9 +68,10 @@ pipeline {
         }
     }
     post {
-        always { // Nettoyage après chaque exécution, même en cas d'échec
+        always {
             script {
-                sh 'docker system prune -f' // Nettoie les artefacts Docker inutilisés
+                dockerImageServer?.remove()
+                dockerImageClient?.remove()
             }
         }
     }
