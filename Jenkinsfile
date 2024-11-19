@@ -64,12 +64,5 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            script {
-                env.DOCKER_IMAGE_SERVER?.remove()
-                env.DOCKER_IMAGE_CLIENT?.remove()
-            }
-        }
-    }
+   
 }
