@@ -10,7 +10,7 @@ pipeline {
             steps {
                 git branch: 'main',
                     url: 'git@github.com:minabl/TP3-DevOps.git',
-                    credentialsId: 'github_ssh'
+                    credentialsId: 'Github_ssh'
             }
         }
         stage('Build Server Image') {
