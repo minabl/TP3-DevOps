@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        IMAGE_NAME_SERVER = 'minabf/mern-server'
-        IMAGE_NAME_CLIENT = 'minabf/mern-client'
+        IMAGE_NAME_SERVER = 'minabf/mern-app-server'
+        IMAGE_NAME_CLIENT = 'minabf/mern-app-client'
     }
     stages {
         stage('Checkout') {
