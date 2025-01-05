@@ -16,10 +16,10 @@ Ce projet est une application full-stack qui consiste en un client React et un s
 
 ## Explications des modifications :
 1. Nettoyage après exécution :
- Le bloc post avec always est utilisé pour garantir que le nettoyage se fait à la fin du pipeline, qu'il réussisse ou échoue. La commande docker system prune -f supprime toutes les images Docker inutilisées et les conteneurs intermédiaires.
+ - Le bloc post avec always est utilisé pour garantir que le nettoyage se fait à la fin du pipeline, qu'il réussisse ou échoue. La commande docker system prune -f supprime toutes les images Docker inutilisées et les conteneurs intermédiaires.
 
 2. Exécution conditionnelle par dossier :
-La directive when avec changeset permet de vérifier si des fichiers ont été modifiés dans les répertoires server ou client. Si un changement est détecté dans un des dossiers, les étapes correspondantes (build, scan, push) s'exécutent uniquement pour ce dossier. Par exemple, changeset "server/**" vérifie les modifications dans tout le dossier server.
+- La directive when avec changeset permet de vérifier si des fichiers ont été modifiés dans les répertoires server ou client. Si un changement est détecté dans un des dossiers, les étapes correspondantes (build, scan, push) s'exécutent uniquement pour ce dossier. Par exemple, changeset "server/**" vérifie les modifications dans tout le dossier server.
 
 ## Technologies Utilisées
 - **Frontend** : React
