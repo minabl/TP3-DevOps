@@ -11,9 +11,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'git@github.com:minabl/TP3-DevOps.git',
-                    credentialsId: 'Github_ssh'
+                script {
+                    git branch: 'main',
+                        url: 'git@github.com:minabl/TP3-DevOps.git',
+                        credentialsId: 'Github_ssh'
+                }
             }
         }
         stage('Build Server Image') {
@@ -37,6 +39,7 @@ pipeline {
         stage('Scan Server Image') {
             steps {
                 script {
+                    echo "Scanning Server Image..."
                     sh """
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
@@ -48,6 +51,7 @@ pipeline {
         stage('Scan Client Image') {
             steps {
                 script {
+                    echo "Scanning Client Image..."
                     sh """
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
@@ -68,5 +72,4 @@ pipeline {
             }
         }
     }
-   
 }
