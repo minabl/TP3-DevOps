@@ -67,8 +67,9 @@ pipeline {
                 script {
                     echo "Pushing images to Docker Hub..."
                     docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
-                        env.DOCKER_IMAGE_SERVER.push('latest')  // Assurez-vous de spécifier un tag
-                        env.DOCKER_IMAGE_CLIENT.push('latest')  // Assurez-vous de spécifier un tag
+                        dockerImageServer.push('latest')
+                        dockerImageClient.push('latest')
+                        
                     }
                 }
             }
