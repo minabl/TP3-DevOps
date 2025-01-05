@@ -71,10 +71,10 @@ pipeline {
                     docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
                     """
                     echo "Pushing images to Docker Hub..."
-                    docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
-                        sh "docker push ${IMAGE_NAME_SERVER}:latest"
-                        sh "docker push ${IMAGE_NAME_CLIENT}:latest"
-                    }
+                
+                    sh "docker push ${IMAGE_NAME_SERVER}:latest"
+                    sh "docker push ${IMAGE_NAME_CLIENT}:latest"
+                    
                 }
             }
         }
