@@ -65,10 +65,14 @@ pipeline {
         stage('Push Images to Docker Hub') {
             steps {
                 script {
+                     echo "Logging in to Docker Hub..."
+                    sh """
+                     docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
+                    """
                     echo "Pushing images to Docker Hub..."
                     docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
-                        dockerImageServer.push('latest')
-                        dockerImageClient.push('latest')
+                       env.DOCKER_IMAGE_SERVER.push('latest')
+                       env.DOCKER_IMAGE_CLIENT.push('latest')
                         
                     }
                 }
