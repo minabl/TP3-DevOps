@@ -1,10 +1,10 @@
 pipeline {
     agent any
     triggers {
-        pollSCM('H/5 * * * *')
+        pollSCM('H/5 * * * *') // Vérifie les changements toutes les 5 minutes
     }
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub') // Assurez-vous que ce credential existe dans Jenkins
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub') // Assurez-vous que cet ID correspond aux credentials dans Jenkins
         IMAGE_NAME_SERVER = 'minabf/mern-server'
         IMAGE_NAME_CLIENT = 'minabf/mern-client'
     }
@@ -14,7 +14,7 @@ pipeline {
                 script {
                     git branch: 'main',
                         url: 'git@github.com:minabl/TP3-DevOps.git',
-                        credentialsId: 'Github_ssh'
+                        credentialsId: 'Github_ssh' // Assurez-vous que ce credential existe et fonctionne
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
                     --timeout 10m \
-                    ${IMAGE_NAME_SERVER}
+                    ${env.DOCKER_IMAGE_SERVER.imageName}
                     """
                 }
             }
@@ -57,7 +57,7 @@ pipeline {
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
                     --timeout 10m \
-                    ${IMAGE_NAME_CLIENT}
+                    ${env.DOCKER_IMAGE_CLIENT.imageName}
                     """
                 }
             }
@@ -65,15 +65,14 @@ pipeline {
         stage('Push Images to Docker Hub') {
             steps {
                 script {
-                     echo "Logging in to Docker Hub..."
+                    echo "Logging in to Docker Hub..."
                     sh """
-                     docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
+                    docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
                     """
                     echo "Pushing images to Docker Hub..."
                     docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
-                       env.DOCKER_IMAGE_SERVER.push('latest')
-                       env.DOCKER_IMAGE_CLIENT.push('latest')
-                        
+                        sh "docker push ${env.DOCKER_IMAGE_SERVER.imageName}:latest"
+                        sh "docker push ${env.DOCKER_IMAGE_CLIENT.imageName}:latest"
                     }
                 }
             }
