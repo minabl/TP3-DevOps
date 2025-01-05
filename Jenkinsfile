@@ -59,6 +59,7 @@ pipeline {
         stage('Push Images to Docker Hub') {
             steps {
                 script {
+                    echo "Pushing images to Docker Hub..."
                     docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
                         env.DOCKER_IMAGE_SERVER.push()
                         env.DOCKER_IMAGE_CLIENT.push()
