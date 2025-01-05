@@ -44,7 +44,7 @@ pipeline {
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
                     --timeout 10m \
-                    ${env.DOCKER_IMAGE_SERVER.imageName}
+                    ${IMAGE_NAME_SERVER}
                     """
                 }
             }
@@ -57,7 +57,8 @@ pipeline {
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
                     --timeout 10m \
-                    ${env.DOCKER_IMAGE_CLIENT.imageName}
+                    ${IMAGE_NAME_CLIENT}
+
                     """
                 }
             }
@@ -71,8 +72,8 @@ pipeline {
                     """
                     echo "Pushing images to Docker Hub..."
                     docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
-                        sh "docker push ${env.DOCKER_IMAGE_SERVER.imageName}:latest"
-                        sh "docker push ${env.DOCKER_IMAGE_CLIENT.imageName}:latest"
+                        sh "docker push ${IMAGE_NAME_SERVER}:latest"
+                        sh "docker push ${IMAGE_NAME_CLIENT}:latest"
                     }
                 }
             }
