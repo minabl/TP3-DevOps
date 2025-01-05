@@ -43,6 +43,7 @@ pipeline {
                     sh """
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
+                    --timeout 10m \
                     ${IMAGE_NAME_SERVER}
                     """
                 }
@@ -55,6 +56,7 @@ pipeline {
                     sh """
                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
+                    --timeout 10m \
                     ${IMAGE_NAME_CLIENT}
                     """
                 }
