@@ -19,6 +19,9 @@ pipeline {
             }
         }
         stage('Build Server Image') {
+            when {
+                changeset "server/**" // Exécute cette étape seulement si des fichiers dans le dossier 'server' ont changé
+            }
             steps {
                 dir('server') {
                     script {
@@ -28,6 +31,9 @@ pipeline {
             }
         }
         stage('Build Client Image') {
+            when {
+                changeset "client/**" // Exécute cette étape seulement si des fichiers dans le dossier 'client' ont changé
+            }
             steps {
                 dir('client') {
                     script {
@@ -37,6 +43,9 @@ pipeline {
             }
         }
         stage('Scan Server Image') {
+            when {
+                changeset "server/**" // Exécute cette étape seulement si des fichiers dans le dossier 'server' ont changé
+            }
             steps {
                 script {
                     echo "Scanning Server Image..."
@@ -50,6 +59,9 @@ pipeline {
             }
         }
         stage('Scan Client Image') {
+            when {
+                changeset "client/**" // Exécute cette étape seulement si des fichiers dans le dossier 'client' ont changé
+            }
             steps {
                 script {
                     echo "Scanning Client Image..."
@@ -58,7 +70,6 @@ pipeline {
                     aquasec/trivy:latest image --exit-code 0 --severity LOW,MEDIUM,HIGH,CRITICAL \
                     --timeout 10m \
                     ${IMAGE_NAME_CLIENT}
-
                     """
                 }
             }
@@ -71,12 +82,16 @@ pipeline {
                     docker login -u ${DOCKERHUB_CREDENTIALS_USR} -p ${DOCKERHUB_CREDENTIALS_PSW}
                     """
                     echo "Pushing images to Docker Hub..."
-                
                     sh "docker push ${IMAGE_NAME_SERVER}:latest"
                     sh "docker push ${IMAGE_NAME_CLIENT}:latest"
-                    
                 }
             }
+        }
+    }
+    post {
+        always {
+            echo "Cleaning up Docker images..."
+            sh 'docker system prune -f' // Nettoyage des images Docker non utilisées
         }
     }
 }
