@@ -4,7 +4,7 @@ pipeline {
         pollSCM('H/5 * * * *')
     }
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub') // Assurez-vous que ce credential existe dans Jenkins
         IMAGE_NAME_SERVER = 'minabf/mern-server'
         IMAGE_NAME_CLIENT = 'minabf/mern-client'
     }
@@ -67,8 +67,8 @@ pipeline {
                 script {
                     echo "Pushing images to Docker Hub..."
                     docker.withRegistry('', "${DOCKERHUB_CREDENTIALS}") {
-                        env.DOCKER_IMAGE_SERVER.push()
-                        env.DOCKER_IMAGE_CLIENT.push()
+                        env.DOCKER_IMAGE_SERVER.push('latest')  // Assurez-vous de spécifier un tag
+                        env.DOCKER_IMAGE_CLIENT.push('latest')  // Assurez-vous de spécifier un tag
                     }
                 }
             }
