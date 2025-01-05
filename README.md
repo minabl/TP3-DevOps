@@ -10,6 +10,15 @@ Ce projet est une application full-stack qui consiste en un client React et un s
 - [Images Docker](#images-docker)
 - [Docker Compose](#docker-compose)
 - [Comment Exécuter le Projet](#comment-executer-le-projet)
+  ## Image
+  
+  ![image](https://github.com/user-attachments/assets/e52d6f57-dd91-43fe-b166-8bd66985594d)
+  ![image](https://github.com/user-attachments/assets/6d45de35-cfb1-4d02-8cee-cd845b4d3190)
+
+
+  ![image](https://github.com/user-attachments/assets/c8a98323-1315-45cf-a4c7-7178bf6990a2)
+
+![image](https://github.com/user-attachments/assets/8dc42e23-057f-4fb6-8ff5-ad815bb95dbe)
 
 ## Technologies Utilisées
 - **Frontend** : React
